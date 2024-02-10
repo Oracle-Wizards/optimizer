@@ -1,0 +1,11 @@
+# Ignorer les fichiers d'environnement virtuel Python
+venv/
+
+# Ignorer les fichiers de configuration locale
+.env
+
+# Ignorer les fichiers de dépendances
+node_modules/
+
+# Ignorer le dossier Generativeai
+Generativeai/
