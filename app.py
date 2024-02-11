@@ -4,28 +4,18 @@ import os
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-# Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-# Obtenir la valeur de GOOGLE_API_KEY
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
-# Configuration de genai avec la clé API
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
-class MyGenerativeModel:
-    def __init__(self):
-        self.model = genai.GenerativeModel('gemini-pro')
 
-    def generateContent(self, input_text):
-        return self.model.generate_content(input_text)
 
 app = Flask(__name__)
 CORS(app)
 
-# Créer une instance du modèle
-my_model = MyGenerativeModel()
 
 @app.route('/')
 def index():
@@ -39,11 +29,10 @@ def generate_query():
         input_text = request.json.get('input_text')
         print(request)
         if input_text:
-            # Générer le contenu
             generated_content = model.generate_content(INPUT)
-            # Renvoyer la réponse au format JSON
             
             sql_query = generated_content.text.split('```sql\n')[1].split('\n```')[0]
+            
             generated_text = "donner un petite explication pour :" + sql_query #+ " ,sous la forme [Explication]"
         
             Explication  = model.generate_content(generated_text)
