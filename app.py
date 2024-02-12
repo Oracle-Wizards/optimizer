@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
-
+from sql_validator import sql_validator
 app = Flask(__name__)
 CORS(app)
 
@@ -28,6 +28,15 @@ def generate_query():
     else:
         return jsonify({"error": "Method not allowed"}), 405
 
+
+@app.route('/analyze-sql', methods=['POST'])
+def analyze_sql():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"status": "error", "message": "Query is required"}), 400
+    query = data['query']
+    result = sql_validator(query)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
