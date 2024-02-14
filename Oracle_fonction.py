@@ -53,3 +53,24 @@ def executionquery(sql_query):
 
     # Retourner le résultat de la requête et l'explication
     return {"result": result}
+
+
+
+def transform_execution_plan(plan):
+    formatted_execution_plan = []
+    for row in plan[5:]:
+        if '-' in row[0]:
+            # If the row contains only dashes, skip it
+            continue
+        else:
+            row_values = [value.strip() for value in row[0].split("|")]
+            formatted_execution_plan.append({
+                'Id': row_values[1],
+                'Operation': row_values[2],
+                'Name': row_values[3],
+                'Rows': row_values[4],
+                'Bytes': row_values[5],
+                'Cost': row_values[6],
+                'Time': row_values[7]
+            })
+    return formatted_execution_plan
