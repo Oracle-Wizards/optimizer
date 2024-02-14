@@ -1,4 +1,3 @@
-import google.generativeai as genai
 import oracledb
 from load_model import load_model
 

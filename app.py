@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request
-import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -11,6 +10,28 @@ from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
 app = Flask(__name__)
 CORS(app)
 
+
+@app.route('/api/query', methods=['POST'])
+def handle_query():
+    try:
+        # Extract the SQL query from the request JSON data
+        data = request.get_json()
+        query = data['query']
+
+        # Validate the SQL query
+        validation_result = sql_validator1(query)
+        if validation_result['status'] == 'error':
+            return jsonify(validation_result), 400  # Return error response with status code 400
+
+        # If validation succeeds, analyze the SQL query
+        analysis_result = analyze_sql_query(query)
+
+        # Respond with the analysis result
+        return jsonify(analysis_result), 200
+    except Exception as e:
+        # Handle any errors that occur during the processing of the request
+        print('Error processing query:', str(e))
+        return jsonify({'error': 'An error occurred'}), 500
 @app.route('/connect_test')
 def test_db_connection():
     try:

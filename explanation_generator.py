@@ -1,4 +1,3 @@
-import google.generativeai as genai
 
 from load_model import load_model
 

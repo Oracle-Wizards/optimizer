@@ -1,4 +1,3 @@
-import google.generativeai as genai
 from load_model import load_model
 import re
 
@@ -7,7 +6,7 @@ def analyze_sql_query(input_text):
     input_with_context = f"Can you analyze the following SQL query and tell me if it's valid or not : '{input_text}' ?"
     generated_content = model.generate_content(input_with_context)
     response = generated_content.text
-    if  "invalid" in response or "is not valid" in response:
+    if "invalid" in response or "is not valid" in response:
         return {"status": "error", "message": "Invalid query"}
     elif "is valid" in response:
         return {"status": "success", "message": "Query is valid"}
