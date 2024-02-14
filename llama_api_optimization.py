@@ -30,8 +30,8 @@ def optimize_query(query):
             return jsonify({"error": str(e)}), 500
     else :
         return jsonify({"error": "Query is required"}), 400
-    
+
 # Exemple d'utilisation de la fonction
 #requete_sql = "SELECT prod, AVG(prix) as avg_prix FROM produits ;"
 #requete_optimisee = optimiser_requete(requete_sql)
-#print(requete_optimisee)  # Imprime simplement le résultat de la requête SQL optimisée
+#print(requete_optimisee)  # Imprime simplement le résultat de la requête SQL optimisée

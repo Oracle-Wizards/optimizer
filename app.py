@@ -5,7 +5,7 @@ from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
-from llama_api_optimization import optimiser_requete, optimize_query
+from llama_api_optimization import optimiser_requete
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +15,6 @@ def test_db_connection():
     try:
         connection = connect_to_oracle()
         connection.close()
-
         return jsonify({'message': 'Connexion réussie à la base de données Oracle'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -28,7 +27,6 @@ def get_tables():
         return jsonify({'tables': tables})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 @app.route('/generate', methods=['POST'])
 def generate_query():
     if request.method == 'POST':
@@ -41,7 +39,7 @@ def generate_query():
             return jsonify({"error": "input_text is missing"}), 400
     else:
         return jsonify({"error": "Method not allowed"}), 405
-
+    
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
     data = request.json
@@ -49,13 +47,13 @@ def analyze_sql():
         return jsonify({"status": "error", "message": "Query is required"}), 400
     query = data['query']
     result = sql_validator(query)
-    
+
     if result == {"status": "success", "message": "Query is valid"} :
         optimized_query = optimiser_requete(query)
         return jsonify({"optimized_query": optimized_query})
     else:
         return jsonify({"status": "error", "message": "Model failed to optimize query"}), 500
-    
+
 
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():
@@ -80,7 +78,7 @@ def execute_query():
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 # @app.route('/optimize', methods=['POST'])  # Define a new route
 # def optimize_query():
 #     data = request.json
