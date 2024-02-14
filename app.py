@@ -7,7 +7,7 @@ from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
-from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
+from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 app = Flask(__name__)
 CORS(app)
 
@@ -30,6 +30,7 @@ def get_tables():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/generate', methods=['POST'])
 def generate_query():
     if request.method == 'POST':
@@ -42,6 +43,7 @@ def generate_query():
             return jsonify({"error": "input_text is missing"}), 400
     else:
         return jsonify({"error": "Method not allowed"}), 405
+    
 
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
@@ -52,6 +54,7 @@ def analyze_sql():
     result = sql_validator(query)
     return jsonify(result)
 
+
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():
     data = request.json
@@ -60,10 +63,26 @@ def execution_plan():
     query = data['query']
     try:
         plan = get_execution_plan(query)
-        return jsonify({"execution_plan": plan})
+        transformed_plan = transform_execution_plan(plan)
+        return jsonify({"execution_plan": transformed_plan})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+ 
+  
+@app.route('/execute-query', methods=['POST'])
+def execute_query():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"error": "SQL query is required"}), 400
+    sql_query = data['query']
+    try:
+        result = executionquery(sql_query)
+        return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+    
+       
 @app.route('/execute-query', methods=['POST'])
 def execute_query():
     data = request.json
