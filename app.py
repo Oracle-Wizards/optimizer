@@ -5,6 +5,8 @@ from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
+from llama_api_optimization import optimiser_requete, optimize_query
+
 app = Flask(__name__)
 CORS(app)
 
@@ -47,7 +49,13 @@ def analyze_sql():
         return jsonify({"status": "error", "message": "Query is required"}), 400
     query = data['query']
     result = sql_validator(query)
-    return jsonify(result)
+    
+    if result == {"status": "success", "message": "Query is valid"} :
+        optimized_query = optimiser_requete(query)
+        return jsonify({"optimized_query": optimized_query})
+    else:
+        return jsonify({"status": "error", "message": "Model failed to optimize query"}), 500
+    
 
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():
@@ -72,10 +80,24 @@ def execute_query():
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# @app.route('/optimize', methods=['POST'])  # Define a new route
+# def optimize_query():
+#     data = request.json
+#     if 'query' not in data:
+#         return jsonify({"error": "Query is required"}), 400
+#     query = data['query']
+#     try:
+#         optimized_query = optimiser_requete(query)
+#         return jsonify({"optimized_query": optimized_query})
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/')
 def index():
     return jsonify({"message": "hello"})
+
 
 
 if __name__ == '__main__':
