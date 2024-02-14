@@ -10,7 +10,6 @@ from Oracle_fonction import connect_to_oracle, get_execution_plan
 app = Flask(__name__)
 CORS(app)
 
-# Route de test pour vérifier la connexion à la base de données
 @app.route('/connect_test')
 def test_db_connection():
     try:
@@ -21,8 +20,6 @@ def test_db_connection():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-
-# Route pour obtenir la liste des tables de la base de données
 @app.route('/tables')
 def get_tables():
     try:
@@ -43,7 +40,6 @@ def get_tables():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/generate', methods=['POST'])
 def generate_query():
     if request.method == 'POST':
@@ -57,7 +53,6 @@ def generate_query():
     else:
         return jsonify({"error": "Method not allowed"}), 405
 
-
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
     data = request.json
@@ -66,7 +61,6 @@ def analyze_sql():
     query = data['query']
     result = sql_validator(query)
     return jsonify(result)
-
 
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():
