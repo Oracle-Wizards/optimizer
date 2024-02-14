@@ -7,7 +7,7 @@ from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
-from Oracle_fonction import connect_to_oracle, get_execution_plan
+from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
 app = Flask(__name__)
 CORS(app)
 
@@ -24,19 +24,8 @@ def test_db_connection():
 @app.route('/tables')
 def get_tables():
     try:
-        connection = connect_to_oracle()
-        cursor = connection.cursor()
-
-        # Exécution de la requête SQL pour récupérer la liste des tables
-        cursor.execute("SELECT table_name FROM user_tables")
-
-        # Récupération des résultats
-        tables = [row[0] for row in cursor.fetchall()]
-
-        # Fermeture du curseur et de la connexion
-        cursor.close()
-        connection.close()
-
+         # Récupération des résultats
+        tables = getTables()
         return jsonify({'tables': tables})
     except Exception as e:
         return jsonify({'error': str(e)}), 500

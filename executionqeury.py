@@ -4,8 +4,7 @@ from load_model import load_model
 
 oracle_connection_string = 'CO/BETTER_CO@better-sql.francecentral.cloudapp.azure.com/FREE'
 
-# Charger le modèle
-model = load_model()
+
 
 # Fonction pour exécuter une requête SQL dans Oracle
 def executionquery(sql_query):
