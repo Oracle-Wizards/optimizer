@@ -1,10 +1,12 @@
 import oracledb
-
-oracle_connection_string = 'CO/BETTER_CO@better-sql.francecentral.cloudapp.azure.com/FREE'
+import os
+from dotenv import load_dotenv
 
 # Fonction pour se connecter à la base de données Oracle
 def connect_to_oracle():
-    connection = oracledb.connect(oracle_connection_string)
+    load_dotenv()
+    ORACLE_CNX_KEY = os.getenv('oracle_connection_string')
+    connection = oracledb.connect(ORACLE_CNX_KEY)
     return connection
 
 
