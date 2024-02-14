@@ -3,6 +3,7 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
+from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
@@ -71,6 +72,18 @@ def execution_plan():
     try:
         plan = get_execution_plan(query)
         return jsonify({"execution_plan": plan})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/execute-query', methods=['POST'])
+def execute_query():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"error": "SQL query is required"}), 400
+    sql_query = data['query']
+    try:
+        result = executionquery(sql_query)
+        return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
