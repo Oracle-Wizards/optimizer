@@ -91,3 +91,5 @@ def sql_validator(input_text):
 
     # Valider la requête SQL en utilisant le modèle
     return analyze_sql_query(input_text)
+
+
