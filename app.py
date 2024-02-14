@@ -6,7 +6,7 @@ from executionqeury import executionquery
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
-from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
+from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 app = Flask(__name__)
 CORS(app)
 
@@ -38,6 +38,7 @@ def test_db_connection():
     try:
         connection = connect_to_oracle()
         connection.close()
+
         return jsonify({'message': 'Connexion réussie à la base de données Oracle'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -51,6 +52,7 @@ def get_tables():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/generate', methods=['POST'])
 def generate_query():
     if request.method == 'POST':
@@ -63,6 +65,7 @@ def generate_query():
             return jsonify({"error": "input_text is missing"}), 400
     else:
         return jsonify({"error": "Method not allowed"}), 405
+    
 
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
@@ -71,13 +74,7 @@ def analyze_sql():
         return jsonify({"status": "error", "message": "Query is required"}), 400
     query = data['query']
     result = sql_validator(query)
-
-    if result == {"status": "success", "message": "Query is valid"} :
-        optimized_query = optimiser_requete(query)
-        return jsonify({"optimized_query": optimized_query})
-    else:
-        return jsonify({"status": "error", "message": "Model failed to optimize query"}), 500
-
+    return jsonify(result)
 
 
 @app.route('/execution-plan', methods=['POST'])
@@ -125,24 +122,9 @@ def execute_query():
 #     except Exception as e:
 #         return jsonify({"error": str(e)}), 500
 
-# @app.route('/optimize', methods=['POST'])  # Define a new route
-# def optimize_query():
-#     data = request.json
-#     if 'query' not in data:
-#         return jsonify({"error": "Query is required"}), 400
-#     query = data['query']
-#     try:
-#         optimized_query = optimiser_requete(query)
-#         return jsonify({"optimized_query": optimized_query})
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
 @app.route('/')
 def index():
     return jsonify({"message": "hello"})
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
