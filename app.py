@@ -1,12 +1,11 @@
 from flask import Flask, jsonify, request
-import google.generativeai as genai
-import os
-from dotenv import load_dotenv
 from flask_cors import CORS
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
 from Oracle_fonction import connect_to_oracle, get_execution_plan
+
+
 app = Flask(__name__)
 CORS(app)
 
@@ -83,6 +82,7 @@ def execution_plan():
 @app.route('/')
 def index():
     return jsonify({"message": "hello"})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

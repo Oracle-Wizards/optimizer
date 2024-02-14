@@ -1,25 +1,18 @@
-from flask import Flask, jsonify
-import oracledb
+import openai
 
-app = Flask(__name__)
+# Replace with your valid Llama API token
+api_key = "<LL-2bYY14yB4vqT03qEXMqonIfIGXiPeSNdFgrmkoPRZkdRfKDEccmDXsTF94mVZ8Az>"
+base_url = "https://api.llama-api.com"
 
-# Configuration de la base de données Oracle
-oracle_connection_string = 'CO/BETTER_CO@better-sql.francecentral.cloudapp.azure.com/FREE'
+client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
-# Fonction pour se connecter à la base de données Oracle
-def connect_to_oracle():
-    connection = oracledb.connect(oracle_connection_string)
-    return connection
+response = client.chat.completions.create(
+    model="llama-13b-chat",
+    messages=[
+        {"role": "system", "content": "Assistant is a large language model trained by OpenAI."},
+        {"role": "user", "content": "Who were the founders of Microsoft?"}
+    ]
+)
 
-# Route de test pour vérifier la connexion à la base de données
-@app.route('/')
-def test_db_connection():
-    try:
-        connection = connect_to_oracle()
-        connection.close()
-        return jsonify({'message': 'Connexion réussie à la base de données Oracle'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
+print(response.model_dump_json(indent=2))
+print(response.choices[0].message.content)
