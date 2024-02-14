@@ -1,15 +1,13 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
-from Oracle_fonction import connect_to_oracle, get_execution_plan
-
-
+from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
 app = Flask(__name__)
 CORS(app)
 
-# Route de test pour vérifier la connexion à la base de données
 @app.route('/connect_test')
 def test_db_connection():
     try:
@@ -20,28 +18,14 @@ def test_db_connection():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-
-# Route pour obtenir la liste des tables de la base de données
 @app.route('/tables')
 def get_tables():
     try:
-        connection = connect_to_oracle()
-        cursor = connection.cursor()
-
-        # Exécution de la requête SQL pour récupérer la liste des tables
-        cursor.execute("SELECT table_name FROM user_tables")
-
-        # Récupération des résultats
-        tables = [row[0] for row in cursor.fetchall()]
-
-        # Fermeture du curseur et de la connexion
-        cursor.close()
-        connection.close()
-
+         # Récupération des résultats
+        tables = getTables()
         return jsonify({'tables': tables})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/generate', methods=['POST'])
 def generate_query():
@@ -56,7 +40,6 @@ def generate_query():
     else:
         return jsonify({"error": "Method not allowed"}), 405
 
-
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
     data = request.json
@@ -65,7 +48,6 @@ def analyze_sql():
     query = data['query']
     result = sql_validator(query)
     return jsonify(result)
-
 
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():
@@ -76,6 +58,18 @@ def execution_plan():
     try:
         plan = get_execution_plan(query)
         return jsonify({"execution_plan": plan})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/execute-query', methods=['POST'])
+def execute_query():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"error": "SQL query is required"}), 400
+    sql_query = data['query']
+    try:
+        result = executionquery(sql_query)
+        return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
