@@ -5,7 +5,8 @@ from flask_cors import CORS
 from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
-from sql_validator import sql_validator
+from sql_validator import sql_validator1
+from sql_validator import analyze_sql_query
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
 app = Flask(__name__)
 CORS(app)
@@ -20,8 +21,6 @@ def handle_query():
 
         # Validate the SQL query
         validation_result = sql_validator1(query)
-        if validation_result['status'] == 'error':
-            return jsonify(validation_result), 400  # Return error response with status code 400
 
         # If validation succeeds, analyze the SQL query
         analysis_result = analyze_sql_query(query)
@@ -32,6 +31,15 @@ def handle_query():
         # Handle any errors that occur during the processing of the request
         print('Error processing query:', str(e))
         return jsonify({'error': 'An error occurred'}), 500
+@app.route('/analyze-sql', methods=['POST'])
+def analyze_sql():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"status": "error", "message": "Query is required"}), 400
+    query = data['query']
+    result = sql_validator1(query)
+    return jsonify(result)
+
 @app.route('/connect_test')
 def test_db_connection():
     try:
@@ -64,14 +72,7 @@ def generate_query():
     else:
         return jsonify({"error": "Method not allowed"}), 405
 
-@app.route('/analyze-sql', methods=['POST'])
-def analyze_sql():
-    data = request.json
-    if 'query' not in data:
-        return jsonify({"status": "error", "message": "Query is required"}), 400
-    query = data['query']
-    result = sql_validator(query)
-    return jsonify(result)
+
 
 @app.route('/execution-plan', methods=['POST'])
 def execution_plan():

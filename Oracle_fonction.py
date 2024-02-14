@@ -1,7 +1,7 @@
 import oracledb
 import os
 from dotenv import load_dotenv
-
+from sql_validator import sql_validator1
 # Fonction pour se connecter à la base de données Oracle
 def connect_to_oracle():
     load_dotenv()
