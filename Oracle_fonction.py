@@ -74,3 +74,4 @@ def transform_execution_plan(plan):
                 'Time': row_values[7]
             })
     return formatted_execution_plan
+
