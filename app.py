@@ -4,7 +4,7 @@ from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
 from sql_validator import sql_validator
-from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables
+from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 from llama_api_optimization import optimiser_requete
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
 
@@ -42,6 +42,7 @@ def generate_query():
     else:
         return jsonify({"error": "Method not allowed"}), 405
     
+    
 @app.route('/analyze-sql', methods=['POST'])
 def analyze_sql():
     data = request.json
@@ -67,15 +68,17 @@ def execution_plan():
     query = data['query']
     try:
         plan = get_execution_plan(query)
-        return jsonify({"execution_plan": plan})
+        transformed_plan = transform_execution_plan(plan)
+        return jsonify({"execution_plan": transformed_plan})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
     
 @app.route('/execute-query', methods=['POST'])
 def execute_query():
     data = request.json
     if 'query' not in data:
-        return jsonify({"error": "SQL query is required"}), 400
+        return jsonify({"error":  "SQL query is required"}), 400
     sql_query = data['query']
     try:
         result = executionquery(sql_query)
