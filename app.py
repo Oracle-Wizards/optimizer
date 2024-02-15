@@ -53,6 +53,7 @@ def analyze_sql():
     if result == {"status": "success", "message": "Query is valid"} :
         text = optimiser_requete(query)
         optimized_query  = extract_optimized_sql_query(text)
+        print("optimized query: ", optimized_query)
         return jsonify({"optimized_query": optimized_query})
     else:
         return jsonify({"status": "error", "message": "Model failed to optimize query"}), 500
