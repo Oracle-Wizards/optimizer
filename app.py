@@ -5,7 +5,7 @@ from flask_cors import CORS
 from executionqeury import executionquery
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
 from explanation_generator import generate_explanation
-from sql_validator import sql_validator
+from sql_validator import sql_validator , analyze_sql_query
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 app = Flask(__name__)
 CORS(app)
