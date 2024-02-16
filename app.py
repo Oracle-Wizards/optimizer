@@ -52,12 +52,25 @@ def analyze_sql():
     result = sql_validator(query)
 
     if result == {"status": "success", "message": "Query is valid"} :
-        text = optimiser_requete(query)
-        optimized_query  = extract_optimized_sql_query(text)
-        print("optimized query: ", optimized_query)
-        return jsonify({"optimized_query": optimized_query})
+        # text = optimiser_requete(query)
+        # optimized_query  = extract_optimized_sql_query(text)
+        # print("optimized query: ", optimized_query)
+        # return jsonify({"optimized_query": optimized_query})
+        return jsonify({"status": "success", "message": "Query is valid"})
     else:
-        return jsonify({"status": "error", "message": "Model failed to optimize query"}), 500
+        return jsonify({"status": "error", "message": "Query is invalid"}), 500
+    
+@app.route('/optimise-query', methods=['POST'])
+def optimise_query():
+    data = request.json
+    if 'query' not in data:
+        return jsonify({"status": "error", "message": "Query is required"}), 400
+    query = data['query']
+    text = optimiser_requete(query)
+    optimized_query  = extract_optimized_sql_query(text)
+    print("optimized query: ", optimized_query)
+    return jsonify({"optimized_query": optimized_query})
+
 
 
 @app.route('/execution-plan', methods=['POST'])
