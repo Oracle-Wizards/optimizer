@@ -15,7 +15,7 @@ def optimiser_requete(requete_sql):
     response = client.chat.completions.create(
         model="llama-13b-chat",
         messages=[
-            {"role": "system", "content": "Optimize the following SQL query in the following form '''sql : " + requete_sql + "''' end :"}
+            {"role": "system", "content": "Optimize the following Oracle SQL query in the following form '''sql : " + requete_sql + "''' end :"}
         ]
     )
     optimized_query = response.choices[0].message.content

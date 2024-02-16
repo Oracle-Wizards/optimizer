@@ -56,22 +56,45 @@ def executionquery(sql_query):
 
 
 
+# def transform_execution_plan(plan):
+#     formatted_execution_plan = []
+#     for row in plan[5:]:
+#         if '-' in row[0]:
+#             # If the row contains only dashes, skip it
+#             continue
+#         else:
+#             row_values = [value.strip() for value in row[0].split("|")]
+#             formatted_execution_plan.append({
+#                 'Id': row_values[1],
+#                 'Operation': row_values[2],
+#                 'Name': row_values[3],
+#                 'Rows': row_values[4],
+#                 'Bytes': row_values[5],
+#                 'Cost': row_values[6],
+#                 'Time': row_values[7]
+#             })
+#     return formatted_execution_plan
+
+
 def transform_execution_plan(plan):
     formatted_execution_plan = []
     for row in plan[5:]:
         if '-' in row[0]:
-            # If the row contains only dashes, skip it
+            # Si la rangée ne contient que des tirets, la sauter
             continue
         else:
+            # Diviser la rangée en valeurs en utilisant le délimiteur "|"
             row_values = [value.strip() for value in row[0].split("|")]
-            formatted_execution_plan.append({
-                'Id': row_values[1],
-                'Operation': row_values[2],
-                'Name': row_values[3],
-                'Rows': row_values[4],
-                'Bytes': row_values[5],
-                'Cost': row_values[6],
-                'Time': row_values[7]
-            })
+            # S'assurer qu'il y a suffisamment de valeurs dans row_values avant d'accéder à ses éléments
+            if len(row_values) >= 8:
+                formatted_execution_plan.append({
+                    'Id': row_values[1],
+                    'Operation': row_values[2],
+                    'Name': row_values[3],
+                    'Rows': row_values[4],
+                    'Bytes': row_values[5],
+                    'Cost': row_values[6],
+                    'Time': row_values[7]
+                })
     return formatted_execution_plan
 
