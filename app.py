@@ -6,7 +6,7 @@ from explanation_generator import generate_explanation
 from sql_validator import sql_validator
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 from llama_api_optimization import optimiser_requete
-from query_sql_generator import generate_sql_query, extract_optimized_sql_query
+from query_sql_generator import generate_sql_query , extract_optimized_sql_query
 import json
 from datetime import datetime
 
@@ -14,26 +14,6 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-
-@app.route('/api/validation', methods=['POST'])
-def handle_query():
-    try:
-        # Extract the SQL query from the request JSON data
-        data = request.get_json()
-        query = data['query']
-
-        # Validate the SQL query
-        validation_result = sql_validator1(query)
-
-        # If validation succeeds, analyze the SQL query
-        analysis_result = analyze_sql_query(query)
-
-        # Respond with the analysis result
-        return jsonify(analysis_result), 200
-    except Exception as e:
-        # Handle any errors that occur during the processing of the request
-        print('Error processing query:', str(e))
-        return jsonify({'error': 'An error occurred'}), 500
 @app.route('/connect_test')
 def test_db_connection():
     try:
