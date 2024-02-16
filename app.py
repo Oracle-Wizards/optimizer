@@ -87,9 +87,6 @@ def execution_plan():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-
-
     
 @app.route('/execute-query', methods=['POST'])
 def execute_query():
@@ -116,6 +113,7 @@ def execute_query():
 #         return jsonify({"optimized_query": optimized_query})
 #     except Exception as e:
 #         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/')
 def index():
