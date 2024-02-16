@@ -7,6 +7,7 @@ from sql_validator import sql_validator
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 from llama_api_optimization import optimiser_requete
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
+import json
 
 
 app = Flask(__name__)
@@ -95,7 +96,9 @@ def execute_query():
     sql_query = data['query']
     try:
         result = executionquery(sql_query)
-        return jsonify({"result": result})
+        response_data = {"optimized_query": result}
+        json_response = json.dumps(response_data)
+        return json_response
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
