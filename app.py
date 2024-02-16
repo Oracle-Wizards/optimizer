@@ -8,6 +8,7 @@ from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , 
 from llama_api_optimization import optimiser_requete
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
 import json
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -44,7 +45,7 @@ def generate_query():
         return jsonify({"error": "Method not allowed"}), 405
     
     
-@app.route('/analyze-sql', methods=['POST'])
+@app.route('/analyze_sql', methods=['POST'])
 def analyze_sql():
     data = request.json
     if 'query' not in data:
@@ -61,17 +62,28 @@ def analyze_sql():
     else:
         return jsonify({"status": "error", "message": "Query is invalid"}), 500
     
-@app.route('/optimise-query', methods=['POST'])
+# @app.route('/optimise-query', methods=['POST'])
+# def optimise_query():
+#     data = request.json
+#     if 'query' not in data:
+#         return jsonify({"status": "error", "message": "Query is required"}), 400
+#     query = data['query']
+#     text = optimiser_requete(query)
+#     optimized_query  = extract_optimized_sql_query(text)
+#     print("optimized query: ", optimized_query)
+#     return jsonify({"optimized_query": optimized_query})
+
+@app.route('/optimise_query', methods=['POST'])
 def optimise_query():
     data = request.json
     if 'query' not in data:
         return jsonify({"status": "error", "message": "Query is required"}), 400
     query = data['query']
     text = optimiser_requete(query)
-    optimized_query  = extract_optimized_sql_query(text)
-    print("optimized query: ", optimized_query)
+    optimized_query = extract_optimized_sql_query(text)
+    # Encode the optimized query explicitly before printing
+    print("optimized query: ", optimized_query.encode('utf-8', errors='ignore'))
     return jsonify({"optimized_query": optimized_query})
-
 
 
 @app.route('/execution-plan', methods=['POST'])
@@ -88,6 +100,21 @@ def execution_plan():
         return jsonify({"error": str(e)}), 500
 
     
+# @app.route('/execute-query', methods=['POST'])
+# def execute_query():
+#     data = request.json
+#     if 'query' not in data:
+#         return jsonify({"error":  "SQL query is required"}), 400
+#     sql_query = data['query']
+#     try:
+#         result = executionquery(sql_query)
+#         response_data = {"optimized_query": result}
+#         json_response = json.dumps(response_data)
+#         return json_response
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
+
+
 @app.route('/execute-query', methods=['POST'])
 def execute_query():
     data = request.json
@@ -96,9 +123,14 @@ def execute_query():
     sql_query = data['query']
     try:
         result = executionquery(sql_query)
-        response_data = {"optimized_query": result}
-        json_response = json.dumps(response_data)
-        return json_response
+        # Check if result is a datetime object
+        if isinstance(result, datetime):
+            # Convert datetime object to string
+            result_str = result.isoformat()
+            response_data = {"optimized_query": result_str}
+        else:
+            response_data = {"optimized_query": result}
+        return jsonify(response_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
