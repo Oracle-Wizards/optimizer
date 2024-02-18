@@ -45,8 +45,8 @@ def extract_optimized_sql_query(text):
         + "ORDER_ITEMS: ORDER_ID, LINE_ITEM_ID, PRODUCT_ID, UNIT_PRICE, QUANTITY, SHIPMENT_ID. "
         + "INVENTORY: INVENTORY_ID, STORE_ID, PRODUCT_ID, PRODUCT_INVENTORY. "
         + "Exemples : "
-        + "1. SELECT * FROM Orders WHERE ORDER_STATUS = 'Pending'; "
-        + "2. SELECT ORDER_ID, CUSTOMER_ID FROM Orders WHERE ORDER_STATUS = 'Complete' INDEX(ORDER_STATUS);"
+        + "INPUT :  SELECT * FROM Orders WHERE ORDER_STATUS = 'Pending'; "
+        + "OUTPUT : ```sql SELECT ORDER_ID, CUSTOMER_ID FROM Orders WHERE ORDER_STATUS = 'Complete' INDEX(ORDER_STATUS); ```"
     )
     while not sql_query:
 
