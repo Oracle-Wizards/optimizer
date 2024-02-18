@@ -3,7 +3,7 @@ from flask_cors import CORS
 from executionqeury import executionquery
 from query_sql_generator import generate_sql_query
 from explanation_generator import generate_explanation
-from sql_validator import sql_validator
+from sql_validator import sql_validator ,sql_validator1 ,analyze_sql_query
 from Oracle_fonction import connect_to_oracle, get_execution_plan , getTables , transform_execution_plan
 from llama_api_optimization import optimiser_requete
 from query_sql_generator import generate_sql_query , extract_optimized_sql_query
@@ -72,6 +72,25 @@ def analyze_sql():
 #     optimized_query  = extract_optimized_sql_query(text)
 #     print("optimized query: ", optimized_query)
 #     return jsonify({"optimized_query": optimized_query})
+@app.route('/api/validation', methods=['POST'])
+def handle_query():
+    try:
+        # Extract the SQL query from the request JSON data
+        data = request.get_json()
+        query = data['query']
+
+        # Validate the SQL query
+        validation_result = sql_validator1(query)
+
+        # If validation succeeds, analyze the SQL query
+        analysis_result = analyze_sql_query(query)
+
+        # Respond with the analysis result
+        return jsonify(analysis_result), 200
+    except Exception as e:
+        # Handle any errors that occur during the processing of the request
+        print('Error processing query:', str(e))
+        return jsonify({'error': 'An error occurred'}), 500
 
 @app.route('/optimise_query', methods=['POST'])
 def optimise_query():
